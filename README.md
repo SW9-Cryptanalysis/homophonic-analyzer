@@ -3,4 +3,4 @@
 1. Run the "uv sync" command
 
 ## Run the code
-- "uv run"
+- "uv run src/main.py "
