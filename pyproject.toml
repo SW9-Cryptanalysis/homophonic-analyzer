@@ -1,0 +1,12 @@
+[project]
+name = "homophonic-analyzer"
+version = "0.1.0"
+description = "A smart frequency analysis tool for homophonic substitution ciphers."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
