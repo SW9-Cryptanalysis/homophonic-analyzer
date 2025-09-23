@@ -4,3 +4,9 @@
 
 ## Run the code
 - "uv run src/main.py "
+
+## Testing
+- "uv run pytest --cov=src"
+
+## Linting
+- "uv run ruff check"
