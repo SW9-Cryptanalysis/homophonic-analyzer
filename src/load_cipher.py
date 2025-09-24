@@ -12,12 +12,11 @@ def load_cipher(filepath: str) -> list[int]:
     Returns:
         The ciphertext as a list of numbers.
     """
-    
-    
     cipher_path = os.path.join('data', 'example_ciphers', filepath)
     with open(cipher_path, 'r') as f:
         data = json.load(f)
     return data['ciphertext']
+
 
 def get_cipher_frequencies(cipher_text: list[int]) -> np.ndarray:
     """Calculates the frequency of each symbol in the cipher text.
