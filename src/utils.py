@@ -1,5 +1,6 @@
 import json
 import os
+from constants import FREQUENCIES_PATH
 
 def load_letter_frequencies(language: str = "english") -> dict[str, float]:
     """Loads letter frequency data for a specified language.
@@ -16,7 +17,7 @@ def load_letter_frequencies(language: str = "english") -> dict[str, float]:
     if language not in supported_languages:
         raise ValueError("Unsupported language.")
 
-    freq_path = os.path.join('data', 'frequencies', f'{language}_letter_frequencies.json')
+    freq_path = os.path.join(FREQUENCIES_PATH, f'{language}_letter_frequencies.json')
     with open(freq_path, 'r') as f:
         frequency_data = json.load(f)
     

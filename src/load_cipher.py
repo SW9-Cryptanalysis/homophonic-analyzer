@@ -2,6 +2,7 @@ import json
 import numpy as np
 from collections import Counter
 import os
+from constants import EXAMPLE_CIPHERS_PATH
 
 def load_cipher(filepath: str) -> list[int]:
     """Reads a cipher from a JSON file.
@@ -12,7 +13,7 @@ def load_cipher(filepath: str) -> list[int]:
     Returns:
         The ciphertext as a list of numbers.
     """
-    cipher_path = os.path.join('data', 'example_ciphers', filepath)
+    cipher_path = os.path.join(EXAMPLE_CIPHERS_PATH, filepath)
     with open(cipher_path, 'r') as f:
         data = json.load(f)
     return data['ciphertext']
