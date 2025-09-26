@@ -1,10 +1,11 @@
 import json
 import numpy as np
+import pathlib
 from collections import Counter
 import os
 from constants import EXAMPLE_CIPHERS_PATH
 
-def load_cipher(filepath: str) -> list[int]:
+def load_cipher(filepath: pathlib.Path) -> list[int]:
     """Reads a cipher from a JSON file.
 
     Args:
