@@ -3,7 +3,7 @@
 1. Run the "uv sync" command
 
 ## Run the code
-- "uv run src/main.py "
+- "uv run python -m src.main"
 
 ## Testing
 - "uv run pytest --cov=src"
