@@ -1,6 +1,6 @@
 import pathlib
 
-FEASIBILITY_THRESHOLD = 10_000_000_000 # 10 billion
+FEASIBILITY_THRESHOLD = 100_000_000_000_000 # 1 Trillion
 FREQUENCY_TOLERANCE = 0.0005 # This is 0.05%
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent

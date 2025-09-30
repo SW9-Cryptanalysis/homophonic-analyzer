@@ -11,7 +11,7 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
     cipher = load_cipher(EXAMPLE_CIPHERS_PATH / cipher_file_path)
     cipher_frequencies = get_cipher_frequencies(cipher)
     letter_frequencies = load_letter_frequencies("english")
-    print(f"Loaded cipher with {(cipher_frequencies)} unique symbols")
+    print(f"Loaded cipher with {len(cipher_frequencies)} unique symbols")
 
     # Go through each letter in letter frequencies starting from the least frequent
     sorted_letters = sorted(letter_frequencies.items(), key=lambda item: item[1])
@@ -23,7 +23,7 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
         print(f"  Expected range in cipher: {min_max_range}")
         
         # Checks if the max number of homophones is feasible
-        is_letter_feasible = is_feasible(len(cipher_frequencies), 9)
+        is_letter_feasible = is_feasible(len(cipher_frequencies), min_max_range[1])
         if not is_letter_feasible:
             continue
         
