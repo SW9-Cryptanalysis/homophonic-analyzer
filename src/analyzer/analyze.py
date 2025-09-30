@@ -19,7 +19,7 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
     sorted_letters = sorted(letter_frequencies.items(), key=lambda item: item[1])
     
     for letter, freq in sorted_letters:
-        print(f"Analyzing letter: {letter} with frequency {freq}")
+        print(f"\n *** Analyzing letter: {letter} with frequency {freq} ***")
         
         min_max_range = calculate_target_range(len(cipher_frequencies), freq)
         print(f"  Expected range in cipher: {min_max_range}")
@@ -32,14 +32,27 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
         # Find all subsets of cipher symbols whose frequencies sum to the target range
         candidates = []
         for i in range(min_max_range[0], min_max_range[1] + 1):
-            print(f"  Finding candidates with {i} homophones and frequency {freq}")
+            print(f"\n  Finding candidates with {i} homophones")
             candidates += backtracking(
                 cipher_frequencies,
                 i,
                 freq
             )
         
-        print(f"  Found {len(candidates)} candidate sets for letter '{letter}'")
+        print_candidates_clean(candidates)
+        
         num_combinations = math.comb(len(cipher_frequencies), min_max_range[1])
         print(f"  Percentage of combinations removed: {(num_combinations - len(candidates)) / num_combinations * 100:.6f}%")
-        
+
+
+def print_candidates_clean(candidates: List[Set[int]]):
+    clean_candidates = []
+    for candidate_set in candidates:
+        clean_set = {int(symbol) for symbol in candidate_set}
+        clean_candidates.append(clean_set)
+    
+    if clean_candidates:
+        print(f"  Sample candidates:")
+        for i, candidate in enumerate(clean_candidates):
+            sorted_candidate = sorted(candidate)
+            print(f"    {i+1}: {{{', '.join(map(str, sorted_candidate))}}}")

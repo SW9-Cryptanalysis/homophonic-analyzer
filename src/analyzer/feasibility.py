@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Tuple
 import math
 
 from src.constants import RANGE_TOLERANCE, FEASIBILITY_THRESHOLD
@@ -21,5 +21,5 @@ def is_feasible(candidate_pool_size: int, homophones_needed: int) -> bool:
     """
     # math.comb(n, k) efficiently calculates "n choose k"
     num_combinations = math.comb(candidate_pool_size, homophones_needed)
-    print(f"  Number of combinations: {num_combinations}")
+    print(f"  Maximum number of combinations: {num_combinations}")
     return num_combinations <= FEASIBILITY_THRESHOLD
