@@ -31,9 +31,17 @@ def get_cipher_frequencies(cipher_text: list[int]) -> np.ndarray:
         A numpy structured array with 'symbol' and 'frequency' fields.
     """
     counts = Counter(cipher_text)
+    print(f"  Unique symbols in cipher: {len(counts)}")
     total = len(cipher_text)
+    print(f"  Total symbols in cipher: {total}")
+    
+    for symbol, count in counts.items():
+        if symbol == 62:
+            print(f"   Symbol 62 count: {count}")
     
     freq_data = [(symbol, count / total) for symbol, count in counts.items()]
+    print(f"  Sample frequencies: {freq_data[:5]}")
     structured_array = np.array(freq_data, dtype=[('symbol', int), ('frequency', float)])
+    print(f"  Structured array sample: {structured_array[14]}")
     
     return structured_array

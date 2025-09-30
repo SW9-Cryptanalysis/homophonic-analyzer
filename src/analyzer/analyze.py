@@ -1,3 +1,4 @@
+import math
 from typing import List, Set, Tuple
 import numpy as np
 
@@ -11,6 +12,7 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
     cipher = load_cipher(EXAMPLE_CIPHERS_PATH / cipher_file_path)
     cipher_frequencies = get_cipher_frequencies(cipher)
     letter_frequencies = load_letter_frequencies("english")
+    print(f"Length of cipher: {len(cipher)}")
     print(f"Loaded cipher with {len(cipher_frequencies)} unique symbols")
 
     # Go through each letter in letter frequencies starting from the least frequent
@@ -36,5 +38,8 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
                 i,
                 freq
             )
+        
         print(f"  Found {len(candidates)} candidate sets for letter '{letter}'")
+        num_combinations = math.comb(len(cipher_frequencies), min_max_range[1])
+        print(f"  Percentage of combinations removed: {(num_combinations - len(candidates)) / num_combinations * 100:.6f}%")
         

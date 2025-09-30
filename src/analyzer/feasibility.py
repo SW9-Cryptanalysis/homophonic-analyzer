@@ -1,14 +1,14 @@
 from typing import Dict, Tuple
 import math
 
-from src.constants import FREQUENCY_TOLERANCE, FEASIBILITY_THRESHOLD
+from src.constants import RANGE_TOLERANCE, FEASIBILITY_THRESHOLD
 
 def calculate_target_range(
     total_length: int, target_freq: float
 ) -> Tuple[int, int]:
     """Calculates the min and max expected count for a letter."""
     expected_count = total_length * target_freq
-    delta = total_length * FREQUENCY_TOLERANCE
+    delta = total_length * RANGE_TOLERANCE
     min_count = math.floor(expected_count - delta)
     max_count = math.ceil(expected_count + delta)
     return max(1, min_count), max_count
