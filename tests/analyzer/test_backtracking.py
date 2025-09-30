@@ -3,6 +3,7 @@ import numpy as np
 from src.analyzer.backtracking import backtracking
 
 def test_backtracking_basic():
+    """Basic test with small, manageable data"""
     cipher_frequencies = np.array([(1, 0.5), (2, 0.3), (3, 0.2)], dtype=[('symbol', int), ('frequency', float)])
     target_homophones = 2
     target_frequency = 0.8

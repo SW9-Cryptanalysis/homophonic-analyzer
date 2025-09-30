@@ -11,6 +11,7 @@ def test_is_feasible():
     assert not is_feasible(40, 20)  # C(40,20) = 137,846,528,820
 
 def test_calculate_target_range():
+    """Test target range calculation for typical frequencies"""
     assert calculate_target_range(114, 0.01) == (1, 2)
     assert calculate_target_range(156, 0.12702) == (19, 21)
     assert calculate_target_range(56, 0.05) == (2, 3)
