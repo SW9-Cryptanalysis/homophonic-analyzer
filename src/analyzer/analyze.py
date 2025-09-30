@@ -1,6 +1,5 @@
 import math
-from typing import List, Set, Tuple
-import numpy as np
+from typing import List, Set
 
 from ..load_cipher import load_cipher, get_cipher_frequencies
 from ..constants import EXAMPLE_CIPHERS_PATH
@@ -8,7 +7,7 @@ from ..utils import load_letter_frequencies
 from .feasibility import calculate_target_range, is_feasible
 from .backtracking import backtracking
 
-def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
+def find_letter_candidates(cipher_file_path: str = "cipher-1.json") -> List[Set[int]]:
     cipher = load_cipher(EXAMPLE_CIPHERS_PATH / cipher_file_path)
     cipher_frequencies = get_cipher_frequencies(cipher)
     letter_frequencies = load_letter_frequencies("english")
@@ -43,6 +42,8 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
         
         num_combinations = math.comb(len(cipher_frequencies), min_max_range[1])
         print(f"  Percentage of combinations removed: {(num_combinations - len(candidates)) / num_combinations * 100:.6f}%")
+    
+    return candidates
 
 
 def print_candidates_clean(candidates: List[Set[int]]):
@@ -52,7 +53,7 @@ def print_candidates_clean(candidates: List[Set[int]]):
         clean_candidates.append(clean_set)
     
     if clean_candidates:
-        print(f"  Sample candidates:")
+        print("  Sample candidates:")
         for i, candidate in enumerate(clean_candidates):
             sorted_candidate = sorted(candidate)
             print(f"    {i+1}: {{{', '.join(map(str, sorted_candidate))}}}")
