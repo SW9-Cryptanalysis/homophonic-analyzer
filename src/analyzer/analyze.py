@@ -7,8 +7,8 @@ from ..utils import load_letter_frequencies
 from .feasibility import calculate_target_range, is_feasible
 from .backtracking import backtracking
 
-def find_letter_candidates():
-    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / "cipher.json")
+def find_letter_candidates(cipher_file_path: str = "cipher-1.json"):
+    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / cipher_file_path)
     cipher_frequencies = get_cipher_frequencies(cipher)
     letter_frequencies = load_letter_frequencies("english")
     print(f"Loaded cipher with {(cipher_frequencies)} unique symbols")

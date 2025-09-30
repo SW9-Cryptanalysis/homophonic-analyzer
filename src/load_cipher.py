@@ -17,7 +17,8 @@ def load_cipher(filepath: pathlib.Path) -> list[int]:
     cipher_path = os.path.join(EXAMPLE_CIPHERS_PATH, filepath)
     with open(cipher_path, 'r') as f:
         data = json.load(f)
-    return data['ciphertext']
+    ciphertext_str = data['ciphertext']
+    return [int(num) for num in ciphertext_str.split()]
 
 
 def get_cipher_frequencies(cipher_text: list[int]) -> np.ndarray:
