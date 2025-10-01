@@ -1,6 +1,6 @@
 import json
 import os
-from constants import FREQUENCIES_PATH
+from .constants import FREQUENCIES_PATH
 
 def load_letter_frequencies(language: str = "english") -> dict[str, float]:
     """Loads letter frequency data for a specified language.

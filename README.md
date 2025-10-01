@@ -1,12 +1,12 @@
 # homophonic-analyzer
 ## Get started
-1. Run the "uv sync" command
+1. Run the `uv sync` command
 
 ## Run the code
-- "uv run src/main.py "
+- `uv run python -m src.main`
 
 ## Testing
-- "uv run pytest --cov=src"
+- `uv run pytest`
 
 ## Linting
-- "uv run ruff check"
+- `uv run ruff check`

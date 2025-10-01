@@ -1,12 +1,12 @@
-from load_cipher import load_cipher, get_cipher_frequencies
-from utils import load_letter_frequencies
+from .analyzer.analyze import find_letter_candidates
+
 
 def main():
-    cipher = load_cipher("cipher.json")
-    frequencies = get_cipher_frequencies(cipher)
-    print(frequencies)
-    frequencies = load_letter_frequencies()
-    print(frequencies)
+    res = find_letter_candidates("cipher-1.json")
+    for letter, candidates in res:
+        print(f"Letter: {letter}:")
+        for candidate_set in candidates:
+            print(f"  Candidate set: {[int(cand) for cand in candidate_set]}")
 
 
 if __name__ == "__main__":
