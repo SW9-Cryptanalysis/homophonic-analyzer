@@ -6,7 +6,7 @@
 - `uv run python -m src.main`
 
 ## Testing
-- `uv run pytest --cov=src --cov-report=term-missing`
+- `uv run pytest`
 
 ## Linting
 - `uv run ruff check`
