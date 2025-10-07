@@ -24,7 +24,6 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json") -> List[Tupl
     sorted_letters = sorted(letter_frequencies.items(), key=lambda item: item[1])
     
     for letter, freq in sorted_letters:
-        print(f"Analyzing letter '{letter}' with target frequency {freq:.4f}")
         min_max_range = calculate_target_range(len(cipher_frequencies), freq)
         
         is_letter_feasible = is_feasible(len(cipher_frequencies), min_max_range[1])
@@ -42,6 +41,5 @@ def find_letter_candidates(cipher_file_path: str = "cipher-1.json") -> List[Tupl
         
         if letter_candidates:
             candidates.append((letter, letter_candidates))
-        print(f"    Candidates found: {len(letter_candidates)}")
         
     return candidates

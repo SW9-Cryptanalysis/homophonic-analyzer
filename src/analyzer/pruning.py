@@ -27,23 +27,19 @@ def prune_frequencies(
     pruned_candidates = []
     for item in cipher_frequencies:
         current_freq = item['frequency']
-        
-        # Create a temporary array of other frequencies
         others = freqs[freqs != current_freq]
         
         # Condition 1: Is the frequency too high?
-        # Sum with the (n-1) smallest other frequencies
         if len(others) >= target_homophones - 1:
             sum_with_smallest = current_freq + np.sum(others[:target_homophones - 1])
             if sum_with_smallest > upper_bound:
-                continue # Prune this item
+                continue
 
         # Condition 2: Is the frequency too low?
-        # Sum with the (n-1) largest other frequencies
         if len(others) >= target_homophones - 1:
             sum_with_largest = current_freq + np.sum(others[-(target_homophones - 1):])
             if sum_with_largest < lower_bound:
-                continue # Prune this item
+                continue
         
         pruned_candidates.append(item)
     

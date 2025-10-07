@@ -93,7 +93,6 @@ def _backtrack(
         symbol = pruned_frequencies[i]['symbol']
         frequency = pruned_frequencies[i]['frequency']
         
-        # Optimization: check before the recursive call
         if current_sum + frequency > upper_bound:
             break
 
