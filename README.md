@@ -6,7 +6,7 @@
 - `uv run python -m src.main`
 
 ## Testing
-- `uv run pytest`
+- `uv run -m pytest`
 
 ## Linting
 - `uv run ruff check`
