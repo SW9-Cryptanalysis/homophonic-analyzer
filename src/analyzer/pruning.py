@@ -22,7 +22,7 @@ def prune_frequencies(
         return np.array([])
 
     # Sort frequencies once to easily find smallest/largest sums
-    freqs = np.sort([item['frequency'] for item in cipher_frequencies])
+    freqs = np.unique([item['frequency'] for item in cipher_frequencies])
     
     pruned_candidates = []
     for item in cipher_frequencies:
