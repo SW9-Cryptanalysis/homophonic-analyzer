@@ -8,8 +8,8 @@ def test_find_letter_candidates_basic():
     try:
         candidates = find_letter_candidates("test_cipher.json")
     except Exception as e:
-        assert False, f"find_letter_candidates raised an exception: {e}"
-        
+        assert False, f"find_letter_candidates raised an exception: {e}" # noqa: B011
+
     assert isinstance(candidates, list)
     for letter, candidate_sets in candidates:
         assert isinstance(letter, str) and len(letter) == 1
@@ -21,12 +21,12 @@ def test_find_letter_candidates_basic():
 
 def test_performance_with_infeasible_cipher():
     """Test that the algorithm hits feasibility checks and avoids heavy computation."""
-    with patch('src.analyzer.feasibility.FEASIBILITY_THRESHOLD', 100_000):
+    with patch("src.analyzer.feasibility.FEASIBILITY_THRESHOLD", 100_000):
         try:
             candidates = find_letter_candidates("test_cipher.json")
         except Exception as e:
-            assert False, f"find_letter_candidates raised an exception: {e}"
-        
+            assert False, f"find_letter_candidates raised an exception: {e}" # noqa: B011
+
     assert isinstance(candidates, list)
     for letter, candidate_sets in candidates:
         assert isinstance(letter, str) and len(letter) == 1
@@ -44,7 +44,7 @@ def test_find_letter_candidates_perfomance():
     end_time = time.time()
     duration = end_time - start_time
     assert duration < 10, f"find_letter_candidates took too long: {duration} seconds"
-    
+
     assert isinstance(candidates, list)
     for letter, candidate_sets in candidates:
         assert isinstance(letter, str) and len(letter) == 1

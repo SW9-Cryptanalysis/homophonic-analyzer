@@ -1,37 +1,37 @@
-from typing import List, Set
 import numpy as np
 from ..constants import FREQUENCY_TOLERANCE
 from .pruning import prune_frequencies
 
 def backtracking(
-    cipher_frequencies: np.ndarray, 
-    target_homophones: int, 
-    target_sum: float, 
-    max_candidates: int = 10
-) -> List[Set[int]]:
-    """
-    Finds subsets of cipher symbols whose frequencies sum to a target value.
+    cipher_frequencies: np.ndarray,
+    target_homophones: int,
+    target_sum: float,
+    max_candidates: int = 10,
+) -> list[set[int]]:
+    """Find subsets of cipher symbols whose frequencies sum to a target value.
+
     Includes a pruning pre-processing step to improve performance.
-    
+
     Args:
         cipher_frequencies: Array of dicts with 'symbol' and 'frequency' keys.
         target_homophones: Number of symbols to select.
         target_sum: Desired sum of the selected frequencies.
         max_candidates: Maximum number of candidate solutions to return.
-    
+
     Returns:
         List of sets, each containing symbols that form a valid combination.
+
     """
     lower_bound = target_sum - FREQUENCY_TOLERANCE
     upper_bound = target_sum + FREQUENCY_TOLERANCE
-    
+
     pruned_frequencies = prune_frequencies(
-        cipher_frequencies, target_homophones, lower_bound, upper_bound
+        cipher_frequencies, target_homophones, lower_bound, upper_bound,
     )
-    
+
     if len(pruned_frequencies) < target_homophones:
         return []
-        
+
     candidate_results = []
     _backtrack(
         start_index=0,
@@ -41,14 +41,14 @@ def backtracking(
         target_homophones=target_homophones,
         target_sum=target_sum,
         bounds=(lower_bound, upper_bound),
-        candidate_results=candidate_results
+        candidate_results=candidate_results,
     )
-    
+
     candidate_results.sort(key=lambda x: x[1])
     best_candidates = candidate_results[:max_candidates]
     return [candidate[0] for candidate in best_candidates]
-    
-    
+
+
 def _backtrack(
     start_index: int,
     current_combination: set,
@@ -57,11 +57,10 @@ def _backtrack(
     target_homophones: int,
     target_sum: float,
     bounds: tuple,
-    candidate_results: list
-):
-    """
-    The recursive helper function to find combinations.
-    
+    candidate_results: list,
+) -> None:
+    """Find combinations of cipher symbols.
+
     Args:
         start_index: Current index in pruned_frequencies to consider.
         current_combination: Set of currently selected symbols.
@@ -71,9 +70,10 @@ def _backtrack(
         target_sum: Desired sum of the selected frequencies.
         bounds: Tuple (lower_bound, upper_bound) for valid sums.
         candidate_results: List to store valid combinations and their distances.
-    
+
     Returns:
-        None. Results are appended to candidate_results.            
+        None. Results are appended to candidate_results.
+
     """
     lower_bound, upper_bound = bounds
     n = len(pruned_frequencies)
@@ -90,9 +90,9 @@ def _backtrack(
         return
 
     for i in range(start_index, n):
-        symbol = pruned_frequencies[i]['symbol']
-        frequency = pruned_frequencies[i]['frequency']
-        
+        symbol = pruned_frequencies[i]["symbol"]
+        frequency = pruned_frequencies[i]["frequency"]
+
         if current_sum + frequency > upper_bound:
             break
 
@@ -100,6 +100,6 @@ def _backtrack(
         _backtrack(
             i + 1, current_combination, current_sum + frequency,
             pruned_frequencies, target_homophones, target_sum,
-            bounds, candidate_results
+            bounds, candidate_results,
         )
         current_combination.remove(symbol)
