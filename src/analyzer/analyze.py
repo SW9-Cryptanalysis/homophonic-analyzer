@@ -1,6 +1,6 @@
 from ..load_cipher import load_cipher, get_cipher_frequencies
-from ..constants import EXAMPLE_CIPHERS_PATH
-from ..utils import load_letter_frequencies
+from ..utils.constants import EXAMPLE_CIPHERS_PATH
+from ..utils.utils import load_letter_frequencies
 from .feasibility import calculate_target_range, is_feasible
 from .backtracking import backtracking
 

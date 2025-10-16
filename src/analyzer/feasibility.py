@@ -1,6 +1,6 @@
 import math
 
-from src.constants import RANGE_TOLERANCE, FEASIBILITY_THRESHOLD
+from ..utils.constants import RANGE_TOLERANCE, FEASIBILITY_THRESHOLD
 
 def calculate_target_range(
     total_length: int, target_freq: float,
