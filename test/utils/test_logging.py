@@ -18,7 +18,7 @@ class TestAnsiColorFormatter:
 			formatted = formatter.format(record)
 			assert logging.getLevelName(level) in formatted
 			assert f"This is a {logging.getLevelName(level).lower()} message." in formatted
-   
+
 	def test_format_includes_filename_and_lineno(self):
 		"""Test that the formatted log includes filename and line number."""
 		formatter = AnsiColorFormatter(datefmt="%Y-%m-%d %H:%M:%S")
