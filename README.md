@@ -10,3 +10,8 @@
 
 ## Linting
 - `uv run ruff check`
+
+## Environment Variables
+- Create a `.env` file in the root directory.
+- Define the following variables:
+  - `LOG_LEVEL`: Set the logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL).
