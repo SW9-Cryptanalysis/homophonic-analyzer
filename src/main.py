@@ -1,5 +1,7 @@
 import logging
+import os
 import numpy as np
+import dotenv
 
 from .analyzer.analyze import find_letter_candidates
 from .hill_climbing.hill_climbing import hill_climbing
@@ -19,11 +21,13 @@ from .utils.embeddings import (
 )
 from .utils.evaluation import ser
 
+dotenv.load_dotenv()
+
 handler = logging.StreamHandler()
 handler.setFormatter(fmt=AnsiColorFormatter(datefmt="%Y-%m-%d %H:%M:%S"))
 logger = logging.getLogger()
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(os.getenv("LOG_LEVEL", "CRITICAL"))
 
 
 def main() -> None:
