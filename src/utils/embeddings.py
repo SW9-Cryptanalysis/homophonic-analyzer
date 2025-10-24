@@ -48,7 +48,7 @@ def get_mappings(filepath: str) -> dict[str, str]:
 def get_average_embedding(embeddings: np.ndarray) -> np.ndarray:
 	"""Calculate the average embedding vector from a dictionary of embeddings.
 	Args:
-		embeddings (dict): A dictionary mapping symbols to their corresponding embedding vectors.
+		embeddings (np.ndarray): A list of embedding vectors.
 	Returns:
 		np.ndarray: The average embedding vector.
 	"""
