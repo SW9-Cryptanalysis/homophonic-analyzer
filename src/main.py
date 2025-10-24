@@ -4,6 +4,7 @@ import numpy as np
 from .analyzer.analyze import find_letter_candidates
 from .hill_climbing.hill_climbing import hill_climbing
 
+from .utils.constants import EMBEDDINGS_PATH, MONOALPHABETIC_CIPHER_PREFIX, HOMOPHONIC_CIPHER_PREFIX, SPECIAL_CIPHER_PREFIX
 from .utils.embeddings import get_embeddings, get_mappings, get_average_embedding, cosine_sim
 
 logging.basicConfig(level=logging.INFO)
@@ -61,9 +62,9 @@ def main_hill_climbing() -> None:
  
  
 def test_embeddings():
-	embeddings_30 = get_embeddings("embeddings/cipher-30_cipher_embeddings.csv")
-	mappings_30 = get_mappings("embeddings/cipher-30_mappings.csv")
-	plaintext_embeddings = get_embeddings("embeddings/cipher-30_plaintext_embeddings.csv")
+	embeddings_30 = get_embeddings(str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}cipher_embeddings.csv"))
+	mappings_30 = get_mappings(str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}mappings.csv"))
+	plaintext_embeddings = get_embeddings(str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}plaintext_embeddings.csv"))
 	logging.info(f"Embeddings length: {len(embeddings_30)}")
 	logging.info(f"Mappings length: {len(mappings_30)}")
  
@@ -77,14 +78,33 @@ def test_embeddings():
  
 	logging.info("Cosine Similarities for each letter:")
 	logging.info("------------------------------")
-	logging.info("| Letter".center(7) + " | " + "Cosine Similarity".rjust(15) + " |")
+	logging.info("| Letter".center(7) + " | " + "Cosine Similarity".rjust(14) + " |")
 	logging.info("------------------------------")
 	for letter, sim in cosine_similarities.items():
 		logging.info(f"|{letter.center(7)} | {float(sim):>17.4f} |")
 	logging.info("------------------------------")
 	logging.info(f"Average cosine similarity: {avg_cosine_sim:.4f}")
+ 
+ 
+def test_mono_embeddings():
+	cipher_embeddings = get_embeddings(str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}cipher_embeddings.csv"))
+	mappings = get_mappings(str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}mappings.csv"))
+	english_embeddings = get_embeddings(str(EMBEDDINGS_PATH / "english_plaintext_embeddings.csv"))
+
+	logging.info(f"Embeddings length: {len(cipher_embeddings)}")
+	logging.info(f"Mappings length: {len(mappings)}")
+	logging.info(f"English Embeddings length: {len(english_embeddings)}")
+
+
+	for symbol, letter in sorted(set(mappings.items())):
+		similarity = cosine_sim(cipher_embeddings[symbol.lower()], english_embeddings[letter.lower()])
+		logging.info(f"	{letter} <-> {symbol:2}, Cosine Similarity: {similarity:7.4f}")
+		#logging.info(f"Symbol: {symbol}, Embedding: {cipher_embeddings[symbol.lower()]}")
+		#logging.info(f"English Letter: {letter}, Embedding: {english_embeddings[letter.lower()]}")
+
+
 
 if __name__ == "__main__":
 	#main_hill_climbing()
-	test_embeddings()
+	test_mono_embeddings()
 	
