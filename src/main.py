@@ -3,6 +3,7 @@ import numpy as np
 
 from .analyzer.analyze import find_letter_candidates
 from .hill_climbing.hill_climbing import hill_climbing
+from .utils.logging import AnsiColorFormatter
 
 from .utils.constants import (
 	EMBEDDINGS_PATH,
@@ -18,16 +19,20 @@ from .utils.embeddings import (
 )
 from .utils.evaluation import ser
 
-logging.basicConfig(level=logging.INFO)
+handler = logging.StreamHandler()
+handler.setFormatter(fmt=AnsiColorFormatter(datefmt="%Y-%m-%d %H:%M:%S"))
+logger = logging.getLogger()
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 
 def main() -> None:
 	"""Demonstrate the usage of find_letter_candidates."""
 	res = find_letter_candidates("cipher-1.json")
 	for letter, candidates in res:
-		logging.info(f"Letter: {letter}:")
+		logger.info(f"Letter: {letter}:")
 		for candidate_set in candidates:
-			logging.info(f"  Candidate set: {[int(cand) for cand in candidate_set]}")
+			logger.info(f"  Candidate set: {[int(cand) for cand in candidate_set]}")
 
 
 def main_hill_climbing() -> None:
@@ -76,7 +81,7 @@ def main_hill_climbing() -> None:
 
 	# Pick random initial solution from cipher_symbols
 	initial_solution = np.random.choice(cipher_symbols)
-	logging.info(f"Initial solution: {initial_solution}")
+	logger.info(f"Initial solution: {initial_solution}")
 	cfg = {
 		"max_iterations": 100,
 		"step_size": 0.1,
@@ -88,7 +93,7 @@ def main_hill_climbing() -> None:
 		score_function,
 		cfg,
 	)
-	logging.info(f"Best solution: {best_solution}, Best score: {best_score}")
+	logger.info(f"Best solution: {best_solution}, Best score: {best_score}")
 
 
 def test_embeddings() -> None:
@@ -102,8 +107,8 @@ def test_embeddings() -> None:
 	plaintext_embeddings = get_embeddings(
 		str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}plaintext_embeddings.csv"),
 	)
-	logging.info(f"Embeddings length: {len(embeddings_30)}")
-	logging.info(f"Mappings length: {len(mappings_30)}")
+	logger.info(f"Embeddings length: {len(embeddings_30)}")
+	logger.info(f"Mappings length: {len(mappings_30)}")
 
 	cosine_similarities: dict[str, float] = {}
 	for letter in sorted(set(mappings_30.values())):
@@ -122,14 +127,14 @@ def test_embeddings() -> None:
 
 	avg_cosine_sim = np.mean([float(sim) for sim in cosine_similarities.values()])
 
-	logging.info("Cosine Similarities for each letter:")
-	logging.info("------------------------------")
-	logging.info("| Letter".center(7) + " | " + "Cosine Similarity".rjust(14) + " |")
-	logging.info("------------------------------")
+	logger.info("Cosine Similarities for each letter:")
+	logger.info("------------------------------")
+	logger.info("| Letter".center(7) + " | " + "Cosine Similarity".rjust(14) + " |")
+	logger.info("------------------------------")
 	for letter, sim in cosine_similarities.items():
-		logging.info(f"|{letter.center(7)} | {float(sim):>17.4f} |")
-	logging.info("------------------------------")
-	logging.info(f"Average cosine similarity: {avg_cosine_sim:.4f}")
+		logger.info(f"|{letter.center(7)} | {float(sim):>17.4f} |")
+	logger.info("------------------------------")
+	logger.info(f"Average cosine similarity: {avg_cosine_sim:.4f}")
 
 
 def test_mono_embeddings() -> None:
@@ -146,13 +151,13 @@ def test_mono_embeddings() -> None:
 
 	reconstructed_key = {}
 
-	for symbol, letter in sorted(set(mappings.items())):
+	for symbol, letter in sorted(set(mappings.items()), key=lambda x: x[1]):
 		similarity = cosine_sim(
 			cipher_embeddings[symbol.lower()],
 			english_embeddings[letter.lower()],
 		)
-		logging.info(
-			f"	{letter} <-> {symbol:2}, Cosine Similarity: {similarity:7.4f}",
+		logger.info(
+			f"  {letter} <-> {symbol:2}, Cosine Similarity: {similarity:7.4f}",
 		)
 		closest = None
 		for letter in sorted(set(mappings.values())):
@@ -163,15 +168,15 @@ def test_mono_embeddings() -> None:
 			if closest is None or similarity > closest[1]:
 				closest = (letter, similarity)
 		if closest:
-			logging.info(
+			logger.info(
 				f"Closest letter to {symbol}: {closest[0]}, Similarity: "
-						"{closest[1]:.4f}",
+				f"{closest[1]:.4f}",
 			)
 			reconstructed_key[symbol] = closest[0]
 	# Log the reconstructed key
-	logging.info("Reconstructed Key:")
+	logger.info("Reconstructed Key:")
 	for symbol, letter in reconstructed_key.items():
-		logging.info(f"{symbol} -> {letter}")
+		logger.info(f"{symbol} -> {letter}")
 
 	with open(DATA_PATH / "example_ciphers" / "example_cipher_text.txt") as f:
 		cipher_text = f.read().strip()
@@ -180,8 +185,8 @@ def test_mono_embeddings() -> None:
 	for cipher_symbol in cipher_text.split(" "):
 		plain_symbol = reconstructed_key.get(cipher_symbol, cipher_symbol)
 		plain_text.append(plain_symbol)
-	logging.info("Decrypted text: %s", " ".join(plain_text))
-	logging.info("SER: %.2f", ser(cipher_text, " ".join(plain_text)))
+	logger.info("Decrypted text: %s", " ".join(plain_text))
+	logger.info("SER: %.2f", ser(cipher_text, " ".join(plain_text)))
 
 
 if __name__ == "__main__":
