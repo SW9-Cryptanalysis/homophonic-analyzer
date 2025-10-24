@@ -9,7 +9,7 @@ def test_ser_perfect_match():
 	computed_ser = ser(reference, hypothesis)
 
 	assert computed_ser == expected_ser, f"Expected SER: {expected_ser}, but got: {computed_ser}"
- 
+
 def test_ser_all_symbols_different():
 	"""Test SER when all symbols are different."""
 	reference = "A B C D E"
@@ -19,7 +19,7 @@ def test_ser_all_symbols_different():
 	computed_ser = ser(reference, hypothesis)
 
 	assert computed_ser == expected_ser, f"Expected SER: {expected_ser}, but got: {computed_ser}"
- 
+
 def test_ser_partial_match():
 	"""Test SER with partial matches."""
 	reference = "A B C D E"
