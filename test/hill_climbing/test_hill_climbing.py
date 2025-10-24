@@ -45,7 +45,7 @@ def test_no_neighbors(objective):
 	initial_solution = 2.0
 
 	def no_neighbors(x, step_size=0.1):
-		return [] 
+		return []
 
 	solution, value = hill_climbing(
 		initial_solution,
@@ -53,7 +53,7 @@ def test_no_neighbors(objective):
 		score_function=objective,
 		cfg={"max_iterations": 100},
 	)
-	assert solution[0] == initial_solution 
+	assert solution[0] == initial_solution
 	assert value == objective(
 		np.array([initial_solution])
 	)

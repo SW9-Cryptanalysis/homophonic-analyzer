@@ -1,4 +1,4 @@
-from src.utils import load_letter_frequencies
+from src.utils.utils import load_letter_frequencies
 import pytest
 import numpy as np
 
