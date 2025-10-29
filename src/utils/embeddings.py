@@ -190,7 +190,7 @@ def find_closest(target_vec, vector_dict):
 
 	for key, vec in vector_dict.items():
 		# Calculate dot product (cosine similarity for normalized vectors)
-		sim = np.dot(target_vec, vec)
+		sim = cosine_sim(target_vec, vec)
 
 		if sim > max_sim:
 			max_sim = sim
