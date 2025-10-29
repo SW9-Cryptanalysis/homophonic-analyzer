@@ -1,11 +1,6 @@
 import logging
 import numpy as np
-from ..utils.embeddings import (
-	get_embeddings,
-	get_mappings,
-	get_average_embedding,
-	cosine_sim,
-)
+from ..utils.embeddings import cosine_sim, load_data_as_dict, get_average_embedding
 from ..utils.constants import (
 	EMBEDDINGS_PATH,
 	SPECIAL_CIPHER_PREFIX,
@@ -14,16 +9,20 @@ from ..utils.constants import (
 )
 from ..utils.evaluation import ser
 
+
 def test_embeddings(logger: logging.Logger) -> None:
 	"""Test function for embeddings analysis."""
-	embeddings_30 = get_embeddings(
+	embeddings_30 = load_data_as_dict(
 		str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}cipher_embeddings.csv"),
+		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
-	mappings_30 = get_mappings(
+	mappings_30 = load_data_as_dict(
 		str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}mappings.csv"),
+		lambda parts: parts[1],
 	)
-	plaintext_embeddings = get_embeddings(
+	plaintext_embeddings = load_data_as_dict(
 		str(EMBEDDINGS_PATH / f"{SPECIAL_CIPHER_PREFIX}plaintext_embeddings.csv"),
+		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
 	logger.info(f"Embeddings length: {len(embeddings_30)}")
 	logger.info(f"Mappings length: {len(mappings_30)}")
@@ -57,40 +56,29 @@ def test_embeddings(logger: logging.Logger) -> None:
 
 def test_mono_embeddings(logger: logging.Logger) -> None:
 	"""Test function for monoalphabetic cipher embeddings analysis."""
-	cipher_embeddings = get_embeddings(
-		str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}cipher_embeddings.csv"),
-	)
-	mappings = get_mappings(
+	mappings = load_data_as_dict(
 		str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}mappings.csv"),
+		lambda parts: parts[1],
 	)
-	english_embeddings = get_embeddings(
+	english_embeddings = load_data_as_dict(
 		str(EMBEDDINGS_PATH / "english_plaintext_embeddings.csv"),
+		lambda parts: np.array([float(x) for x in parts[1:]]),
+	)
+	
+	cipher_embeddings = load_data_as_dict(
+		str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}cipher_embeddings.csv"),
+		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
 
 	reconstructed_key = {}
 
 	for symbol, letter in sorted(set(mappings.items()), key=lambda x: x[1]):
-		similarity = cosine_sim(
-			cipher_embeddings[symbol.lower()],
-			english_embeddings[letter.lower()],
+		reconstructed_key[symbol] = reconstruct_mapping(
+			logger, mappings, symbol, letter, {
+				"cipher_embeddings": cipher_embeddings,
+				"english_embeddings": english_embeddings,
+			},
 		)
-		logger.info(
-			f"  {letter} <-> {symbol:2}, Cosine Similarity: {similarity:7.4f}",
-		)
-		closest = None
-		for letter in sorted(set(mappings.values())):
-			similarity = cosine_sim(
-				cipher_embeddings[symbol.lower()],
-				english_embeddings[letter.lower()],
-			)
-			if closest is None or similarity > closest[1]:
-				closest = (letter, similarity)
-		if closest:
-			logger.info(
-				f"Closest letter to {symbol}: {closest[0]}, Similarity: "
-				f"{closest[1]:.4f}",
-			)
-			reconstructed_key[symbol] = closest[0]
 	# Log the reconstructed key
 	logger.info("Reconstructed Key:")
 	for symbol, letter in reconstructed_key.items():
@@ -105,3 +93,31 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 		plain_text.append(plain_symbol)
 	logger.info("Decrypted text: %s", " ".join(plain_text))
 	logger.info("SER: %.2f", ser(cipher_text, " ".join(plain_text)))
+
+
+def reconstruct_mapping(
+	logger, mappings, symbol, letter, data
+):
+	cipher_embeddings = data["cipher_embeddings"]
+	english_embeddings = data["english_embeddings"]
+
+	similarity = cosine_sim(
+		cipher_embeddings[symbol.lower()],
+		english_embeddings[letter.lower()],
+	)
+	logger.info(
+		f"  {letter} <-> {symbol:2}, Cosine Similarity: {similarity:7.4f}",
+	)
+	closest = None
+	for letter in sorted(set(mappings.values())):
+		similarity = cosine_sim(
+			cipher_embeddings[symbol.lower()],
+			english_embeddings[letter.lower()],
+		)
+		if closest is None or similarity > closest[1]:
+			closest = (letter, similarity)
+	if closest:
+		logger.info(
+			f"Closest letter to {symbol}: {closest[0]}, Similarity: {closest[1]:.4f}",
+		)
+		return closest[0]
