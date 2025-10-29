@@ -1,5 +1,5 @@
 import numpy as np
-from utils.embeddings import get_embeddings, get_mappings, normalize_vectors, build_anchor_matrices, solve_procrustes, find_closest
+from utils.embeddings import normalize_vectors, build_anchor_matrices, solve_procrustes, find_closest, load_data_as_dict
 
 
 # --- Main execution block to demonstrate the attack ---
@@ -7,8 +7,9 @@ if __name__ == "__main__":
 	# --- 1. Mock Data (Replace with your real data) ---
 
 	# Our "perfect" Generalized Model (the "source")
-	generalized_model_vectors = get_embeddings(
-		"embeddings/english_plaintext_embeddings.csv"
+	generalized_model_vectors = load_data_as_dict(
+		"embeddings/english_plaintext_embeddings.csv",
+		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
 
 	generalized_model_vectors = normalize_vectors(generalized_model_vectors)
@@ -16,8 +17,9 @@ if __name__ == "__main__":
 	# Our "sparse/noisy" Cipher Model (the "target")
 	# These vectors are *not* aligned with the generalized model.
 	# Note: '?' is the *true* cipher for 'a', but we don't know that.
-	cipher_model_vectors = get_embeddings(
-		"embeddings/monoalphabetic-cipher_cipher_embeddings.csv"
+	cipher_model_vectors = load_data_as_dict(
+		"embeddings/monoalphabetic-cipher_cipher_embeddings.csv",
+		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
  
 	cipher_model_vectors = normalize_vectors(cipher_model_vectors)
@@ -97,8 +99,9 @@ if __name__ == "__main__":
 		print(sorted(predicted_key_map.items(), key=lambda x: x[0].lower()))
 		
 		# Check against our mock ground truth
-		ground_truth = {v.lower(): k for k, v in get_mappings(
-			"embeddings/monoalphabetic-cipher_mappings.csv"
+		ground_truth = {v.lower(): k for k, v in load_data_as_dict(
+			"embeddings/monoalphabetic-cipher_mappings.csv",
+			lambda parts: parts[1],
 		).items()}
 
 		print("\n--- GROUND TRUTH KEY ---")
