@@ -1,4 +1,4 @@
-from src.utils.logging import AnsiColorFormatter
+from src.utils.logging import AnsiColorFormatter, get_colored_logger
 import logging
 
 class TestAnsiColorFormatter:
@@ -49,3 +49,9 @@ class TestAnsiColorFormatter:
 		formatted = formatter.format(record)
 		assert "INFO" in formatted
 		assert "Testing time inclusion." in formatted
+
+class TestGetColoredLogger:
+    def test_get_colored_logger(self):
+        logger = get_colored_logger("Test_name")
+        assert len(logger.handlers) > 0
+        assert isinstance(logger.handlers[0].formatter, AnsiColorFormatter)
