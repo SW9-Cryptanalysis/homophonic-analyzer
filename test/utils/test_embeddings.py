@@ -1,15 +1,17 @@
-from src.utils.embeddings import get_embeddings, get_mappings, get_average_embedding, cosine_sim
+from src.utils.embeddings import load_data_as_dict, get_average_embedding, cosine_sim
 import os
 import numpy as np
 
 CURRENT_DIR = os.path.dirname(__file__)
 
+
 class TestGetEmbeddings:
-
-
 	def test_get_embeddings_shape(self):
 		"""Test that the embeddings have the correct shape."""
-		embeddings = get_embeddings(os.path.join(CURRENT_DIR, "..", "data", "test_embeddings.csv"))
+		embeddings = load_data_as_dict(
+			os.path.join(CURRENT_DIR, "..", "data", "test_embeddings.csv"),
+			lambda parts: np.array([float(x) for x in parts[1:]]),
+		)
 		assert isinstance(embeddings, dict)
 		for vector in embeddings.values():
 			assert isinstance(vector, np.ndarray)
@@ -17,20 +19,20 @@ class TestGetEmbeddings:
 
 
 class TestGetMappings:
-
-
 	def test_get_mappings_content(self):
 		"""Test that the mappings are loaded correctly."""
-		mappings = get_mappings(os.path.join(CURRENT_DIR, "..", "data", "test_mappings.csv"))
+		mappings = load_data_as_dict(
+			os.path.join(CURRENT_DIR, "..", "data", "test_mappings.csv"),
+			lambda parts: parts[1],
+		)
 		assert isinstance(mappings, dict)
 		for symbol, letter in mappings.items():
 			assert isinstance(symbol, str)
 			assert isinstance(letter, str)
-			assert len(letter) == 1 # Ensure it's a single letter
+			assert len(letter) == 1  # Ensure it's a single letter
+
 
 class TestGetAverageEmbedding:
-
-
 	def test_get_average_embedding_value(self):
 		"""Test that the average embedding is computed correctly."""
 		embeddings = {
@@ -42,15 +44,14 @@ class TestGetAverageEmbedding:
 		expected = np.array([4.0, 5.0, 6.0])
 		np.testing.assert_array_equal(avg_embedding, expected)
 
+
 class TestCosineSim:
-
-
 	def test_cosine_sim_value(self):
 		"""Test that the cosine similarity is computed correctly."""
 		vec1 = np.array([1.0, 0.0, 0.0])
 		vec2 = np.array([0.0, 1.0, 0.0])
 		similarity = cosine_sim(vec1, vec2)
-		expected = 0.0 # Orthogonal vectors
+		expected = 0.0  # Orthogonal vectors
 		assert np.isclose(similarity, expected)
 
 	def test_cosine_sim_identical_vectors(self):
@@ -75,11 +76,10 @@ class TestCosineSim:
 		result = cosine_sim(vec1, vec2)
 		assert result == 0.0
 
-
 	def test_cosine_sim_non_normalized_vectors(self):
 		"""Test that the cosine similarity works for non-normalized vectors."""
 		vec1 = np.array([2.0, 0.0, 0.0])
 		vec2 = np.array([4.0, 0.0, 0.0])
 		similarity = cosine_sim(vec1, vec2)
-		expected = 1.0 # Same direction
+		expected = 1.0  # Same direction
 		assert np.isclose(similarity, expected)
