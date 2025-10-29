@@ -1,55 +1,64 @@
 import numpy as np
 import os
+from typing import Callable, Dict, List, TypeVar
+
+T = TypeVar("T")
 
 
-
-def get_embeddings(filepath: str) -> dict[str, np.ndarray]:
-	"""Load embeddings from a CSV file.
+# --- Your Original CSV Parser (Unchanged) ---
+# This function is specific to your CSV format, which is fine.
+# It handles skipping the known header lines.
+def parse_csv(filepath: str) -> list[list[str]]:
+	"""Load a CSV file and return its contents as a list of rows.
 
 	Args:
-		filepath (str): Path to the CSV file containing embeddings.
+	    filepath (str): Path to the CSV file.
 
 	Returns:
-		dict: A dictionary mapping symbols to their corresponding embedding vectors.
-
+	    list[list[str]]: A list of rows, where each row is a list of strings.
 	"""
-	filepath = os.path.join(os.path.dirname(__file__), "../../data", filepath)
-
-	embeddings = {}
 	with open(filepath) as f:
+		parts = []
 		for line in f:
 			# Skip first line if it contains headers
 			if line.startswith("cipher_symbol") or line.startswith("plaintext_letter"):
 				continue
-			parts = line.strip().split(",")
-			symbol = parts[0]
-			vector = np.array([float(x) for x in parts[1:]])
-			embeddings[symbol] = vector
-	return embeddings
+			line = line.strip()
+			if line:  # Added a check to skip potential empty lines
+				parts.append(line.split(","))
+		return parts
 
-def get_mappings(filepath: str) -> dict[str, str]:
-	"""Load symbol-to-letter mappings from a CSV file.
+
+def load_data_as_dict(
+	relative_filepath: str, value_processor: Callable[[List[str]], T]
+) -> Dict[str, T]:
+	"""
+	A general helper to load data from a CSV in the data directory and
+	process it into a dictionary.
+
+	It assumes the first column of the CSV is the key.
 
 	Args:
-		filepath (str): Path to the CSV file containing mappings.
+	    relative_filepath (str): The filename, relative to the ../../data dir.
+	    value_processor (Callable): A function that takes a row (list of strings)
+	                                and returns the processed value for the dict.
 
 	Returns:
-		dict: A dictionary mapping symbols to their corresponding letters.
-
+	    Dict[str, T]: The processed dictionary.
 	"""
-	filepath = os.path.join(os.path.dirname(__file__), "../../data", filepath)
+	filepath = os.path.join(os.path.dirname(__file__), "../../data", relative_filepath)
 
-	mappings = {}
-	with open(filepath) as f:
-		for line in f:
-			# Skip first line if it contains headers
-			if line.startswith("cipher_symbol"):
-				continue
-			parts = line.strip().split(",")
-			symbol = parts[0]
-			letter = parts[1]
-			mappings[symbol] = letter
-	return mappings
+	data = parse_csv(filepath)
+
+	processed_dict = {}
+	for parts in data:
+		if not parts:
+			continue
+		key = parts[0]
+		value: T = value_processor(parts)
+		processed_dict[key] = value
+
+	return processed_dict
 
 def get_average_embedding(embeddings: np.ndarray) -> np.ndarray:
 	"""Calculate the average embedding vector from a dictionary of embeddings.
@@ -59,10 +68,9 @@ def get_average_embedding(embeddings: np.ndarray) -> np.ndarray:
 
 	Returns:
 		np.ndarray: The average embedding vector.
-
 	"""
-	average_vector = np.mean(embeddings, axis=0)
-	return average_vector
+	return np.mean(embeddings, axis=0)
+
 
 def cosine_sim(vec1: np.ndarray, vec2: np.ndarray) -> float:
 	"""Calculate the cosine similarity between two vectors.
@@ -147,10 +155,10 @@ def build_anchor_matrices(model1_vecs, model2_vecs, partial_key):
 def normalize_vectors(vector_dict):
 	"""
 	Normalizes all vectors in a dictionary to unit length (L2 norm).
-	
+
 	Args:
 		vector_dict (dict): The {key: vector} space to normalize.
-	
+
 	Returns:
 		dict: A new dict with the same keys and unit-length vectors.
 	"""
@@ -160,31 +168,32 @@ def normalize_vectors(vector_dict):
 		if norm > 0:
 			normalized_dict[key] = vec / norm
 		else:
-			normalized_dict[key] = vec # Avoid division by zero
+			normalized_dict[key] = vec  # Avoid division by zero
 	return normalized_dict
+
 
 def find_closest(target_vec, vector_dict):
 	"""
 	Finds the key in vector_dict with the vector closest to target_vec.
 	Assumes all vectors (target_vec and in vector_dict) are normalized.
 	Uses dot product (which is equivalent to cosine similarity here).
-	
+
 	Args:
 		target_vec (np.ndarray): The 1 x d normalized vector to match.
 		vector_dict (dict): The {key: normalized_vector} space to search in.
-		
+
 	Returns:
 		(str, float): The key of the closest vector and the similarity score.
 	"""
-	max_sim = -float('inf')
+	max_sim = -float("inf")
 	closest_key = None
-	
+
 	for key, vec in vector_dict.items():
 		# Calculate dot product (cosine similarity for normalized vectors)
 		sim = np.dot(target_vec, vec)
-		
+
 		if sim > max_sim:
 			max_sim = sim
 			closest_key = key
-			
+
 	return closest_key, max_sim
