@@ -74,9 +74,10 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 
 	for symbol, letter in sorted(set(mappings.items()), key=lambda x: x[1]):
 		reconstructed_key[symbol] = reconstruct_mapping(
-			logger, mappings, symbol, letter, {
+			logger, symbol, letter, {
 				"cipher_embeddings": cipher_embeddings,
 				"english_embeddings": english_embeddings,
+				"mappings": mappings
 			},
 		)
 	# Log the reconstructed key
@@ -96,10 +97,11 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 
 
 def reconstruct_mapping(
-	logger, mappings, symbol, letter, data
+	logger, symbol, letter, data
 ):
 	cipher_embeddings = data["cipher_embeddings"]
 	english_embeddings = data["english_embeddings"]
+	mappings = data["mappings"]
 
 	similarity = cosine_sim(
 		cipher_embeddings[symbol.lower()],
