@@ -6,7 +6,7 @@ import dotenv
 from .analyzer.analyze import find_letter_candidates
 from .hill_climbing.hill_climbing import hill_climbing
 from .utils.logging import AnsiColorFormatter
-from .experiments.embeddings import test_embeddings, test_mono_embeddings
+from .experiments.embeddings import test_mono_embeddings
 
 dotenv.load_dotenv()
 

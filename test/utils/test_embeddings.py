@@ -123,22 +123,22 @@ class TestCosineSim:
 class TestSolveProcrustes:
 	def test_solve_procrustes_identity(self):
 		"""Test that the Procrustes solver returns identity for identical matrices."""
-		X = np.array([[1, 0], [0, 1]])
-		Y = np.array([[1, 0], [0, 1]])
-		W = solve_procrustes(X, Y)
+		x = np.array([[1, 0], [0, 1]])
+		y = np.array([[1, 0], [0, 1]])
+		w = solve_procrustes(x, y)
 		expected = np.eye(2)
-		np.testing.assert_array_almost_equal(W, expected)
+		np.testing.assert_array_almost_equal(w, expected)
 
 	def test_solve_procrustes_rotation(self):
 		"""Test that the Procrustes solver returns the correct rotation matrix."""
 		theta = np.pi / 4  # 45 degrees
-		W_true = np.array(
+		w_true = np.array(
 			[[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]
 		)
-		X = np.array([[1, 0], [0, 1]])
-		Y = X @ W_true
-		W_estimated = solve_procrustes(X, Y)
-		np.testing.assert_array_almost_equal(W_estimated, W_true)
+		x = np.array([[1, 0], [0, 1]])
+		y = x @ w_true
+		w_estimated = solve_procrustes(x, y)
+		np.testing.assert_array_almost_equal(w_estimated, w_true)
 
 
 class TestBuildAnchorMatrices:
@@ -153,9 +153,9 @@ class TestBuildAnchorMatrices:
 			"2": np.array([1.0, 0.0]),
 		}
 		partial_key = [("a", "2"), ("b", "1")]
-		X, Y = build_anchor_matrices(model1_vecs, model2_vecs, partial_key)
-		assert X.shape == (2, 2)
-		assert Y.shape == (2, 2)
+		x, y = build_anchor_matrices(model1_vecs, model2_vecs, partial_key, None)
+		assert x.shape == (2, 2)
+		assert y.shape == (2, 2)
 
 	def test_build_anchor_matrices_content(self):
 		"""Test that the anchor matrices are built correctly."""
@@ -168,11 +168,11 @@ class TestBuildAnchorMatrices:
 			"2": np.array([1.0, 0.0]),
 		}
 		partial_key = [("a", "2"), ("b", "1")]
-		X, Y = build_anchor_matrices(model1_vecs, model2_vecs, partial_key)
-		expected_X = np.array([[1.0, 0.0], [0.0, 1.0]])
-		expected_Y = np.array([[1.0, 0.0], [0.0, 1.0]])
-		np.testing.assert_array_equal(X, expected_X)
-		np.testing.assert_array_equal(Y, expected_Y)
+		x, y = build_anchor_matrices(model1_vecs, model2_vecs, partial_key, None)
+		expected_x = np.array([[1.0, 0.0], [0.0, 1.0]])
+		expected_y = np.array([[1.0, 0.0], [0.0, 1.0]])
+		np.testing.assert_array_equal(x, expected_x)
+		np.testing.assert_array_equal(y, expected_y)
 
 	def test_build_anchor_matrices_missing_key(self):
 		"""Test that missing keys raise an error."""
@@ -184,7 +184,7 @@ class TestBuildAnchorMatrices:
 		}
 		partial_key = [("a", "2")]  # "2" is missing in model2_vecs
 		with pytest.raises(ValueError):
-			build_anchor_matrices(model1_vecs, model2_vecs, partial_key)
+			build_anchor_matrices(model1_vecs, model2_vecs, partial_key, None)
 
 	def test_build_anchor_matrices_no_valid_anchors(self):
 		"""Test that no valid anchors raise an error."""
@@ -196,7 +196,7 @@ class TestBuildAnchorMatrices:
 		}
 		partial_key = [("b", "2")]  # Both keys are missing
 		with pytest.raises(ValueError):
-			build_anchor_matrices(model1_vecs, model2_vecs, partial_key)
+			build_anchor_matrices(model1_vecs, model2_vecs, partial_key, None)
 
 
 class TestNormalizeVectors:
@@ -221,6 +221,7 @@ class TestNormalizeVectors:
 		assert np.array_equal(normalized["a"], np.array([0.0, 0.0]))
 		norm_b = np.linalg.norm(normalized["b"])
 		assert np.isclose(norm_b, 1.0)
+
 
 class TestFindClosest:
 	def test_find_closest(self):

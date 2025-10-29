@@ -8,6 +8,7 @@ from ..utils.constants import (
 	DATA_PATH,
 )
 from ..utils.evaluation import ser
+from typing import TypedDict
 
 
 def test_embeddings(logger: logging.Logger) -> None:
@@ -64,7 +65,7 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 		str(EMBEDDINGS_PATH / "english_plaintext_embeddings.csv"),
 		lambda parts: np.array([float(x) for x in parts[1:]]),
 	)
-	
+
 	cipher_embeddings = load_data_as_dict(
 		str(EMBEDDINGS_PATH / f"{MONOALPHABETIC_CIPHER_PREFIX}cipher_embeddings.csv"),
 		lambda parts: np.array([float(x) for x in parts[1:]]),
@@ -77,7 +78,7 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 			logger, symbol, letter, {
 				"cipher_embeddings": cipher_embeddings,
 				"english_embeddings": english_embeddings,
-				"mappings": mappings
+				"mappings": mappings,
 			},
 		)
 	# Log the reconstructed key
@@ -95,10 +96,29 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 	logger.info("Decrypted text: %s", " ".join(plain_text))
 	logger.info("SER: %.2f", ser(cipher_text, " ".join(plain_text)))
 
+class EmbeddingsType(TypedDict):
+	"""Type for the Embedding data construct."""
+
+	cipher_embeddings: dict[str, np.ndarray]
+	english_embeddings: dict[str, np.ndarray]
+	mappings: dict[str, str]
 
 def reconstruct_mapping(
-	logger, symbol, letter, data
-):
+	logger: logging.Logger, symbol: str, letter: str, data: EmbeddingsType,
+) -> str | None:
+	"""Reconstruct mapping for a cipher symbol based on the most similar embedding.
+
+	Args:
+		logger (logging.Logger): Logger for logging results.
+		symbol (str): The symbol we want to reconstruct the mapping for.
+		letter (str): The correct plaintext letter.
+		data (EmbeddingsType): Cipher embedddings, english plaintext embedddings,
+			and mappings.
+
+	Returns:
+		str | None: If any letter is found, the closest one is returned.
+
+	"""
 	cipher_embeddings = data["cipher_embeddings"]
 	english_embeddings = data["english_embeddings"]
 	mappings = data["mappings"]
