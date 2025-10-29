@@ -1,5 +1,5 @@
 import numpy as np
-from ..constants import FREQUENCY_TOLERANCE
+from ..utils.constants import FREQUENCY_TOLERANCE
 from .pruning import prune_frequencies
 
 def backtracking(

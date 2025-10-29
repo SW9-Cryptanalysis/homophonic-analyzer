@@ -1,6 +1,6 @@
 import numpy as np
 from src.load_cipher import load_cipher, get_cipher_frequencies
-from src.constants import EXAMPLE_CIPHERS_PATH
+from src.utils.constants import EXAMPLE_CIPHERS_PATH
 
 def test_load_cipher():
     """Tests that the cipher is loaded correctly."""

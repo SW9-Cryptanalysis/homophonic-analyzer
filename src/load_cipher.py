@@ -3,7 +3,7 @@ import numpy as np
 import pathlib
 from collections import Counter
 import os
-from .constants import EXAMPLE_CIPHERS_PATH
+from .utils.constants import EXAMPLE_CIPHERS_PATH
 
 def load_cipher(filepath: pathlib.Path) -> list[int]:
     """Read a cipher from a JSON file.
