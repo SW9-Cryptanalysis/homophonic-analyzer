@@ -1,5 +1,5 @@
 import numpy as np
-from utils.embeddings import normalize_vectors, build_anchor_matrices, solve_procrustes, find_closest, load_data_as_dict
+from ..utils.embeddings import normalize_vectors, build_anchor_matrices, solve_procrustes, find_closest, load_data_as_dict
 
 
 # --- Main execution block to demonstrate the attack ---
