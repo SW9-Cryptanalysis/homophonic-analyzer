@@ -1,4 +1,6 @@
 import logging
+import sys
+
 
 class AnsiColorFormatter(logging.Formatter):
 	"""Formatter that adds ANSI color codes to log messages based on severity level."""
@@ -71,3 +73,31 @@ class AnsiColorFormatter(logging.Formatter):
 		)
 
 		return f"{time_str} | {level_str} | {name_str} | {message_str} {filename_str}"
+
+
+def get_colored_logger(name: str, level: int = logging.DEBUG) -> logging.Logger:
+	"""Create and configures a logger with the AnsiColorFormatter.
+
+	Args:
+		name (str): The name of the logger
+		level (int): The level for which logs should be printed (default: DEBUG (0))
+
+	Returns:
+		logging.Logger: A color formatted logger ready for use
+
+	"""
+	logger = logging.getLogger(name)
+	logger.setLevel(level)
+
+	if not logger.handlers:
+		handler = logging.StreamHandler(sys.stdout)
+		handler.setLevel(level)
+
+		formatter = AnsiColorFormatter(datefmt="%Y-%m-%d %H:%M:%S")
+		handler.setFormatter(formatter)
+
+		logger.addHandler(handler)
+
+	logger.propagate = False
+
+	return logger
