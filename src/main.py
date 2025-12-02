@@ -14,16 +14,16 @@ handler = logging.StreamHandler()
 handler.setFormatter(fmt=AnsiColorFormatter(datefmt="%Y-%m-%d %H:%M:%S"))
 logger = logging.getLogger()
 logger.addHandler(handler)
-logger.setLevel(os.getenv("LOG_LEVEL", "CRITICAL"))
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 def main() -> None:
 	"""Demonstrate the usage of find_letter_candidates."""
-	res = find_letter_candidates("c_400_5.json")
-	for letter, candidates in res:
-		logger.info(f"Letter: {letter}:")
-		for candidate_set in candidates:
-			logger.info(f"  Candidate set: {[int(cand) for cand in candidate_set]}")
+	res = find_letter_candidates("c_400_10.json")
+	# for letter, candidates in res:
+	# 	logger.info(f"Letter: {letter}:")
+	# 	for candidate_set in candidates:
+	# 		logger.info(f"  Candidate set: {[int(cand) for cand in candidate_set]}")
 
 
 def main_hill_climbing() -> None:
@@ -88,4 +88,4 @@ def main_hill_climbing() -> None:
 
 
 if __name__ == "__main__":
-	test_mono_embeddings(logger)
+	main()

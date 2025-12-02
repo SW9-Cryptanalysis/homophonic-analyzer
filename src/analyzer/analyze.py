@@ -1,8 +1,12 @@
+import logging
+
 from ..load_cipher import load_cipher, get_cipher_frequencies
 from ..utils.constants import EXAMPLE_CIPHERS_PATH
 from ..utils.utils import load_letter_frequencies
 from .feasibility import calculate_target_range, is_feasible
 from .backtracking import backtracking
+
+logger = logging.getLogger(__name__)
 
 
 def find_letter_candidates(
@@ -27,10 +31,12 @@ def find_letter_candidates(
 	sorted_letters = sorted(letter_frequencies.items(), key=lambda item: item[1])
 
 	for letter, freq in sorted_letters:
+		logger.info(f'Letter: {letter}:')
 		min_max_range = calculate_target_range(len(cipher_frequencies), freq)
 
 		is_letter_feasible = is_feasible(len(cipher_frequencies), min_max_range[1])
 		if not is_letter_feasible:
+			logger.info(f'Skipping letter "{letter}" as it is not feasible.')
 			continue
 
 		# Find all subsets of cipher symbols whose frequencies sum to the target range

@@ -1,6 +1,9 @@
 import numpy as np
+import logging
 from ..utils.constants import FREQUENCY_TOLERANCE
 from .pruning import prune_frequencies
+
+logger = logging.getLogger(__name__)
 
 def backtracking(
     cipher_frequencies: np.ndarray,
@@ -45,6 +48,8 @@ def backtracking(
     )
 
     candidate_results.sort(key=lambda x: x[1])
+    logger.info(f'     Target Homophones: {target_homophones}:')
+    logger.info(f'          {len(candidate_results)}')
     best_candidates = candidate_results[:max_candidates]
     return [candidate[0] for candidate in best_candidates]
 
