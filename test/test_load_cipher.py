@@ -4,7 +4,7 @@ from src.utils.constants import EXAMPLE_CIPHERS_PATH
 
 def test_load_cipher():
     """Tests that the cipher is loaded correctly."""
-    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / ("cipher-1.json"))
+    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / ("c_400_5.json"))
 
     assert isinstance(cipher, list)
     assert all(isinstance(x, int) for x in cipher)
@@ -35,7 +35,7 @@ def test_get_cipher_frequencies_calculation():
 
 def test_integration_sum_of_frequencies():
     """Tests that the sum of all frequencies is approximately 1.0."""
-    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / ("cipher-1.json"))
+    cipher = load_cipher(EXAMPLE_CIPHERS_PATH / ("c_400_5.json"))
 
     frequencies = get_cipher_frequencies(cipher)
 

@@ -6,6 +6,7 @@ from ..utils.constants import (
 	SPECIAL_CIPHER_PREFIX,
 	MONOALPHABETIC_CIPHER_PREFIX,
 	DATA_PATH,
+	EXAMPLE_CIPHERS_PATH
 )
 from ..utils.evaluation import ser
 from typing import TypedDict
@@ -86,7 +87,7 @@ def test_mono_embeddings(logger: logging.Logger) -> None:
 	for symbol, letter in reconstructed_key.items():
 		logger.info(f"{symbol} -> {letter}")
 
-	with open(DATA_PATH / "example_ciphers" / "example_cipher_text.txt") as f:
+	with open(DATA_PATH / EXAMPLE_CIPHERS_PATH / "example_cipher_text.txt") as f:
 		cipher_text = f.read().strip()
 
 	plain_text = []

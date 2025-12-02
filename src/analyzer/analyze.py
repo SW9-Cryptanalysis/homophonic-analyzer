@@ -6,7 +6,7 @@ from .backtracking import backtracking
 
 
 def find_letter_candidates(
-	cipher_file_path: str = "cipher-1.json",
+	cipher_file_path: str = "c_400_5.json",
 ) -> list[tuple[str, list[set[int]]]]:
 	"""Find candidate sets of cipher symbols for each letter based on frequency.
 

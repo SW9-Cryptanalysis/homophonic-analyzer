@@ -19,7 +19,7 @@ logger.setLevel(os.getenv("LOG_LEVEL", "CRITICAL"))
 
 def main() -> None:
 	"""Demonstrate the usage of find_letter_candidates."""
-	res = find_letter_candidates("cipher-1.json")
+	res = find_letter_candidates("c_400_5.json")
 	for letter, candidates in res:
 		logger.info(f"Letter: {letter}:")
 		for candidate_set in candidates:

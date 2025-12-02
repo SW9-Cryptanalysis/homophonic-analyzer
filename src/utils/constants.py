@@ -6,7 +6,7 @@ RANGE_TOLERANCE = 0.0025 # This is 0.25%
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent.parent
 DATA_PATH = PROJECT_ROOT / "data"
-EXAMPLE_CIPHERS_PATH = DATA_PATH / "example_ciphers"
+EXAMPLE_CIPHERS_PATH = DATA_PATH / "ciphers"
 FREQUENCIES_PATH = DATA_PATH / "frequencies"
 EMBEDDINGS_PATH = DATA_PATH / "embeddings"
 MONOALPHABETIC_CIPHER_PREFIX = "monoalphabetic-cipher_"
