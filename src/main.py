@@ -2,6 +2,7 @@ import logging
 import os
 import numpy as np
 import dotenv
+import time
 
 from .analyzer.analyze import find_letter_candidates
 from .hill_climbing.hill_climbing import hill_climbing
@@ -19,7 +20,10 @@ logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 def main() -> None:
 	"""Demonstrate the usage of find_letter_candidates."""
-	res = find_letter_candidates("c_400_10.json")
+	starttime = time.time()
+	res = find_letter_candidates("c_800_10.json")
+	endtime = time.time()
+	logger.info(f"Execution time: {endtime - starttime:.4f} seconds")
 	# for letter, candidates in res:
 	# 	logger.info(f"Letter: {letter}:")
 	# 	for candidate_set in candidates:

@@ -40,3 +40,22 @@ def get_cipher_frequencies(cipher_text: list[int]) -> np.ndarray:
                                                   ("frequency", float)])
 
     return structured_array
+
+def get_cipher_symbols_given_letter(
+    filepath: str,
+    letter: str,
+) -> set[int]:
+    """Extract a letters corresponding cipher symbols from cipher.
+
+    Args:
+        filepath: Filepath for cipher.
+        letter: The letter for which to extract cipher symbols.
+    Returns:
+        List of integers representing cipher symbols for the given letter.
+        """
+    cipher_path = os.path.join(EXAMPLE_CIPHERS_PATH, filepath)
+    with open(cipher_path) as f:
+        data = json.load(f)
+    cipher_key = data["key"]
+    symbols = cipher_key.get(letter.lower(), [])
+    return set(int(sym) for sym in symbols)

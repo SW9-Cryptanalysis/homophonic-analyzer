@@ -48,10 +48,10 @@ def backtracking(
     )
 
     candidate_results.sort(key=lambda x: x[1])
-    logger.info(f'     Target Homophones: {target_homophones}:')
+    logger.info(f'   Target Homophones: {target_homophones}:')
     logger.info(f'          {len(candidate_results)}')
     best_candidates = candidate_results[:max_candidates]
-    return [candidate[0] for candidate in best_candidates]
+    return candidate_results
 
 
 def _backtrack(
