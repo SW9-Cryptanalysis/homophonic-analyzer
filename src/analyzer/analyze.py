@@ -43,28 +43,22 @@ def find_letter_candidates(
 			logger.info(f'Skipping letter "{letter}" as it is not feasible.')
 			continue
 
-		# Find all subsets of cipher symbols whose frequencies sum to the target range
-		letter_candidates = []
+		# Count subsets of cipher symbols whose frequencies sum to the target range
+		letter_correct_found = False
 		for i in range(min_max_range[0], min_max_range[1] + 1):
-			# backtracking returns type list[set[int]]
-			letter_candidates += backtracking(
+			# backtracking now returns (total_candidates, correct_found)
+			num_candidates, correct_found = backtracking(
 				cipher_frequencies,
 				i,
 				freq,
+				correct_symbols=correct_letter_symbols,
 			)
-			total_number_of_candidates += len(letter_candidates)
+			total_number_of_candidates += num_candidates
+			if correct_found:
+				letter_correct_found = True
 
-		if letter_candidates:
-			# Check if correct symbols are in any candidate set
-			for candidate_tuple in letter_candidates:
-				# candidate_tuple is (set_of_symbols, distance)
-				candidate_set, distance = candidate_tuple
-				# Convert numpy types to native Python types for cleaner logging
-				candidate_symbols = {int(s) for s in candidate_set}
-				
-				if correct_letter_symbols == candidate_symbols:
-					correct_candidates += 1
-			# candidates.append((letter, letter_candidates))
+		if letter_correct_found:
+			correct_candidates += 1
 		
 		# Log memory usage after processing each letter
 		process = psutil.Process()

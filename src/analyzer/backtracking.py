@@ -9,9 +9,9 @@ def backtracking(
     cipher_frequencies: np.ndarray,
     target_homophones: int,
     target_sum: float,
-    max_candidates: int = 10,
-) -> list[set[int]]:
-    """Find subsets of cipher symbols whose frequencies sum to a target value.
+    correct_symbols: set[int] | None = None,
+) -> tuple[int, bool]:
+    """Count subsets of cipher symbols whose frequencies sum to a target value.
 
     Includes a pruning pre-processing step to improve performance.
 
@@ -19,10 +19,10 @@ def backtracking(
         cipher_frequencies: Array of dicts with 'symbol' and 'frequency' keys.
         target_homophones: Number of symbols to select.
         target_sum: Desired sum of the selected frequencies.
-        max_candidates: Maximum number of candidate solutions to return.
+        correct_symbols: Set of correct symbols for this letter (for validation).
 
     Returns:
-        List of sets, each containing symbols that form a valid combination.
+        Tuple of (total_candidates_found, correct_candidate_found).
 
     """
     lower_bound = target_sum - FREQUENCY_TOLERANCE
@@ -33,9 +33,9 @@ def backtracking(
     )
 
     if len(pruned_frequencies) < target_homophones:
-        return []
+        return (0, False)
 
-    candidate_results = []
+    stats = {'total_candidates': 0, 'correct_found': False}
     _backtrack(
         start_index=0,
         current_combination=set(),
@@ -44,14 +44,13 @@ def backtracking(
         target_homophones=target_homophones,
         target_sum=target_sum,
         bounds=(lower_bound, upper_bound),
-        candidate_results=candidate_results,
+        correct_symbols=correct_symbols,
+        stats=stats,
     )
 
-    candidate_results.sort(key=lambda x: x[1])
     logger.info(f'   Target Homophones: {target_homophones}:')
-    logger.info(f'          {len(candidate_results)}')
-    best_candidates = candidate_results[:max_candidates]
-    return candidate_results
+    logger.info(f'          {stats["total_candidates"]}')
+    return (stats['total_candidates'], stats['correct_found'])
 
 
 def _backtrack(
@@ -62,9 +61,10 @@ def _backtrack(
     target_homophones: int,
     target_sum: float,
     bounds: tuple,
-    candidate_results: list,
+    correct_symbols: set[int] | None,
+    stats: dict,
 ) -> None:
-    """Find combinations of cipher symbols.
+    """Count combinations of cipher symbols and check for correct match.
 
     Args:
         start_index: Current index in pruned_frequencies to consider.
@@ -74,10 +74,11 @@ def _backtrack(
         target_homophones: Number of symbols to select.
         target_sum: Desired sum of the selected frequencies.
         bounds: Tuple (lower_bound, upper_bound) for valid sums.
-        candidate_results: List to store valid combinations and their distances.
+        correct_symbols: Set of correct symbols for validation (optional).
+        stats: Dictionary to track total_candidates and correct_found.
 
     Returns:
-        None. Results are appended to candidate_results.
+        None. Stats are updated in the stats dictionary.
 
     """
     lower_bound, upper_bound = bounds
@@ -86,8 +87,12 @@ def _backtrack(
     # Base case: Found a combination of the correct size
     if len(current_combination) == target_homophones:
         if lower_bound <= current_sum <= upper_bound:
-            distance = abs(current_sum - target_sum)
-            candidate_results.append((current_combination.copy(), distance))
+            stats['total_candidates'] += 1
+            # Check if this matches the correct symbols
+            if correct_symbols is not None:
+                candidate_symbols = {int(s) for s in current_combination}
+                if candidate_symbols == correct_symbols:
+                    stats['correct_found'] = True
         return
 
     # Pruning cases
@@ -105,6 +110,6 @@ def _backtrack(
         _backtrack(
             i + 1, current_combination, current_sum + frequency,
             pruned_frequencies, target_homophones, target_sum,
-            bounds, candidate_results,
+            bounds, correct_symbols, stats,
         )
         current_combination.remove(symbol)

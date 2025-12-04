@@ -21,7 +21,7 @@ logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 def main() -> None:
 	"""Demonstrate the usage of find_letter_candidates."""
 	starttime = time.time()
-	res = find_letter_candidates("c_800_10.json")
+	res = find_letter_candidates("c_800_20.json")
 	endtime = time.time()
 	logger.info(f"Execution time: {endtime - starttime:.4f} seconds")
 	# for letter, candidates in res:
